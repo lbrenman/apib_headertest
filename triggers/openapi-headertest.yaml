@@ -1,0 +1,12 @@
+triggers:
+  openapi-headertest-1:
+    name: get-user
+    parameters:
+      method: get-user
+    enabled: true
+    invoke:
+      flow: get-user
+      parameters:
+        request: $.request
+        config: $.config
+        env: $.env

@@ -1,0 +1,77 @@
+{
+  "openapi": "3.0.0",
+  "x-stoplight": {
+    "id": "e410nefqga0qg"
+  },
+  "info": {
+    "title": "headertest",
+    "version": "1.0",
+    "description": "header test",
+    "contact": {
+      "name": "Leor Brenman",
+      "email": "lbrenman99@hotmail.com",
+      "url": "www.leorbrenman.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "www.leorbrenman.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local"
+    }
+  ],
+  "paths": {
+    "/user": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [
+          "headertest"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "headers": {
+              "x-anothercustomheader": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-user",
+        "description": "Header test resource",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-customheader",
+            "description": "A custom header",
+            "required": true
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "tags": [
+    {
+      "name": "headertest",
+      "description": "header test"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+	"schemaVersion": "4",
+	"info": {
+		"name": "get-user"
+	},
+	"parameter": {
+		"properties": {
+			"request": {
+				"description": "The request"
+			},
+			"config": {
+				"type": "object",
+				"description": "The service's configuration"
+			},
+			"env": {
+				"type": "object",
+				"description": "The host OS environment"
+			}
+		},
+		"additionalProperties": false
+	},
+	"start": "logger.1",
+	"nodes": {
+		"http.1": {
+			"type": "nodehandler://axway-flow/http",
+			"name": "Set HTTP Response",
+			"method": "setresponse",
+			"parameters": [
+				{
+					"name": "status",
+					"type": "number",
+					"value": "200",
+					"metaName": "Status",
+					"metaDescription": "The HTTP status code"
+				},
+				{
+					"name": "body",
+					"type": "string",
+					"value": "\"\\\"success\\\"\"",
+					"metaName": "Body",
+					"metaDescription": "The response payload"
+				},
+				{
+					"name": "headers",
+					"type": "jsonpath",
+					"value": "$.result",
+					"metaName": "Headers",
+					"metaDescription": "Key-value pairs of headers"
+				}
+			],
+			"outputs": {
+				"next": {
+					"context": "$.response",
+					"routes": [],
+					"metaName": "Next"
+				}
+			},
+			"metaMethod": "Set HTTP Response"
+		},
+		"logger.1": {
+			"type": "nodehandler://@axway/api-builder-plugin-fn-logger/logger",
+			"name": "Log Message",
+			"method": "log",
+			"parameters": [
+				{
+					"name": "message",
+					"type": "jsonpath",
+					"value": "$.request.headers[\"x-customheader\"]",
+					"metaName": "Message",
+					"metaDescription": "The log message."
+				}
+			],
+			"outputs": {
+				"next": {
+					"context": null,
+					"routes": [
+						"javascript.1"
+					],
+					"metaName": "Next"
+				},
+				"error": {
+					"context": "$.error",
+					"routes": [],
+					"metaName": "Error"
+				}
+			},
+			"metaMethod": "Log Message"
+		},
+		"javascript.1": {
+			"type": "nodehandler://@axway/api-builder-plugin-fn-javascript/javascript",
+			"name": "Execute",
+			"method": "Execute",
+			"parameters": [
+				{
+					"name": "data",
+					"type": "jsonpath",
+					"value": "$",
+					"metaName": "Data",
+					"metaDescription": "The value to apply as the `data` argument of the JavaScript code. For objects and arrays, `data` is passed by reference."
+				},
+				{
+					"name": "code",
+					"type": "string",
+					"value": "\"let headers = {\\n    \\\"x-anothercustomheader\\\": data.request.headers[\\\"x-customheader\\\"]+',1234'\\n  };\\n  return headers;\""
+				}
+			],
+			"outputs": {
+				"next": {
+					"context": "$.result",
+					"routes": [
+						"http.1"
+					],
+					"metaName": "Next"
+				},
+				"error": {
+					"context": "$.error",
+					"routes": [],
+					"metaName": "Error"
+				}
+			},
+			"metaMethod": "Execute"
+		}
+	}
+}
